@@ -1,0 +1,9 @@
+.auth-card {
+  max-width: 360px; margin: 5rem auto; padding: 1.5rem;
+  border: 1px solid #ddd; border-radius: 12px; display: grid; gap: .75rem;
+  label { display: grid; gap: .25rem; }
+  input { padding: .5rem; border: 1px solid #ccc; border-radius: 8px; }
+  button { padding: .6rem .9rem; border: none; border-radius: 10px; cursor: pointer; }
+  .link { background: transparent; color: #2e6be6; }
+  .error { color: #c62828; }
+}

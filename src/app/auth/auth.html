@@ -1,0 +1,16 @@
+<section class="auth-card">
+  <h1>{{ mode === 'login' ? 'sign in' : 'sign up' }}</h1>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <label> Email <input type="email" formControlName="email" /> </label>
+    <label> Password (6+) <input type="password" formControlName="password" /> </label>
+
+    <button [disabled]="loading">{{ mode === 'login' ? 'login' : 'login' }}</button>
+    <p class="error" *ngIf="error">{{ error }}</p>
+  </form>
+
+  <button class="link" (click)="mode = mode === 'login' ? 'register' : 'login'">
+    {{ mode === 'login' ? 'dont have an account? sign up' : '   already have an account? login' }}
+  </button>
+</section>
+

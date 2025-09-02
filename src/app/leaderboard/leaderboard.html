@@ -1,0 +1,11 @@
+<section class="board">
+  <h1>Leaderboard – Top 10</h1>
+  <ol>
+    <li *ngFor="let row of top$ | async; index as i">
+      <span class="rank">#{{ i + 1 }}</span>
+      <span class="score">{{ row.score }}</span>
+      <span class="name">{{ row.display }}</span>  
+      <span class="when">{{ row.when }}</span>
+    </li>
+  </ol>
+</section>

@@ -1,0 +1,9 @@
+<header class="topbar">
+  <button (click)="logout()">Logout</button>
+  <button (click)="reset()">Reset</button>
+  <button (click)="drop()" [disabled]="dropped">Drop</button>
+  <button (click)="goToLeaderboard()" style="margin-left:1rem">Leaderboard →</button>
+</header>
+
+<canvas #canvas></canvas>
+<p class="hint">Aim to drop the ball as close to the circle center as possible.</p>
