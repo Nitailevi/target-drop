@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "target-drop",
+    "public": "target-drop",
+    "target-drop": "target-drop"
+  },
+  "targets": {
+    "target-drop": {
+      "hosting": {
+        "default": [
+          "target-drop"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

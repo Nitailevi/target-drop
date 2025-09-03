@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "site": "target-drop",
+    "public": "dist/yooz-target-drop/browser",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      { "source": "**", "destination": "/index.csr.html" }
+    ]
+  }
+}
