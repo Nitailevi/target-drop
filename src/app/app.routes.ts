@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { AuthComponent } from './auth/auth';
 import { GameComponent } from './game/game';
-import { LeaderboardComponent } from './leaderboard/leaderboard'; 
+import { LeaderboardComponent } from './leaderboard/leaderboard';
 
 export const routes: Routes = [
   { path: 'auth', component: AuthComponent },

@@ -1,6 +1,6 @@
 // src/app/app.config.ts
 import { ApplicationConfig } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withHashLocation } from '@angular/router'; // Using hash location strategy for simplicity
 import { routes } from './app.routes';
 
 import { provideClientHydration } from '@angular/platform-browser';
@@ -13,7 +13,7 @@ import { environment } from '../environments';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes),
+     provideRouter(routes, withHashLocation()),
     provideClientHydration(),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),

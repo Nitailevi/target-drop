@@ -12,13 +12,15 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth';
 import { ScoreService } from '../services/score';
+import { isPlatformBrowser } from '@angular/common';
+import { PLATFORM_ID, Inject } from '@angular/core';
 
 interface Ball { x: number; y: number; vx: number; vy: number; r: number; }
 
 @Component({
   selector: 'app-game',
   standalone: true,
-  imports: [CommonModule, RouterModule], 
+  imports: [CommonModule, RouterModule],
   templateUrl: './game.html',
   styleUrls: ['./game.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,6 +32,10 @@ export class GameComponent implements AfterViewInit, OnDestroy {
   private auth = inject(AuthService);
   private router = inject(Router);
   private scoreSvc = inject(ScoreService);
+
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+
+  private get isBrowser() { return isPlatformBrowser(this.platformId); }
 
   ctx!: CanvasRenderingContext2D;
   width = 480;
@@ -48,6 +54,7 @@ export class GameComponent implements AfterViewInit, OnDestroy {
   animId = 0;
 
   ngAfterViewInit(): void {
+    if (!this.isBrowser) return; 
     const canvas = this.canvasRef.nativeElement;
     canvas.width = this.width;
     canvas.height = this.height;
@@ -58,11 +65,10 @@ export class GameComponent implements AfterViewInit, OnDestroy {
     this.loop();
   }
 
-  goToLeaderboard() {
-    this.router.navigate(['/leaderboard']);
-  }
+  goToLeaderboard() { this.router.navigate(['/leaderboard']); }
 
   reset() {
+    if (!this.isBrowser) return;
     this.ball.x = this.width / 2;
     this.ball.y = 60;
     this.ball.vx = 3 + Math.random() * 2;
@@ -74,19 +80,13 @@ export class GameComponent implements AfterViewInit, OnDestroy {
     this.cdr.markForCheck();
   }
 
-  drop() {
-    if (this.dropped) return;
-    this.oscillate = false;
-    this.dropped = true;
-  }
+  drop() { if (this.isBrowser && !this.dropped) { this.oscillate = false; this.dropped = true; } }
 
-  logout() {
-    this.auth.logout().then(() => this.router.navigateByUrl('/auth'));
-  }
+  logout() { this.auth.logout().then(() => this.router.navigateByUrl('/auth')); }
 
   private update() {
+    if (!this.isBrowser) return;
     const b = this.ball;
-
     if (this.oscillate) {
       b.x += b.vx;
       if (b.x < b.r || b.x > this.width - b.r) b.vx *= -1;
@@ -105,19 +105,19 @@ export class GameComponent implements AfterViewInit, OnDestroy {
     const dx = Math.abs(this.ball.x - this.targetX);
     const score = Math.max(0, Math.round(100 * (1 - Math.min(dx, 200) / 200)));
     this.lastScore = score;
-    this.scoreSvc.saveScore(score);
+    
+    if (this.isBrowser) this.scoreSvc.saveScore(score);
     this.cdr.markForCheck();
   }
 
   private draw() {
+    if (!this.isBrowser) return;
     const ctx = this.ctx;
     ctx.clearRect(0, 0, this.width, this.height);
 
-    // אזור נחיתה
     ctx.fillStyle = '#f5f5f5';
     ctx.fillRect(0, this.targetY, this.width, this.height - this.targetY);
 
-    // מטרה
     ctx.beginPath();
     ctx.arc(this.targetX, this.targetY, this.targetR, 0, Math.PI * 2);
     ctx.strokeStyle = '#444';
@@ -128,13 +128,11 @@ export class GameComponent implements AfterViewInit, OnDestroy {
     ctx.fillStyle = '#444';
     ctx.fill();
 
-    // כדור
     ctx.beginPath();
     ctx.arc(this.ball.x, this.ball.y, this.ball.r, 0, Math.PI * 2);
     ctx.fillStyle = '#2e6be6';
     ctx.fill();
 
-    // טקסטים
     ctx.fillStyle = '#222';
     ctx.font = '16px system-ui, Arial';
     ctx.fillText(`x: ${this.ball.x.toFixed(0)}`, 10, 24);
@@ -142,12 +140,15 @@ export class GameComponent implements AfterViewInit, OnDestroy {
   }
 
   private loop = () => {
+    if (!this.isBrowser) return;
     this.update();
     this.draw();
     this.animId = requestAnimationFrame(this.loop);
   };
 
   ngOnDestroy(): void {
-    cancelAnimationFrame(this.animId);
+    if (this.isBrowser && typeof cancelAnimationFrame !== 'undefined') {
+      cancelAnimationFrame(this.animId);
+    }
   }
 }
